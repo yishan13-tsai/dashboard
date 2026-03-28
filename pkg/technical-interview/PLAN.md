@@ -61,3 +61,17 @@ AI (Claude Code) was used to assist with planning and implementation. This will 
 - **Styling**: Uses project CSS variables (`--body-bg`, `--border`, `--shadow`, `--link`) for theme consistency.
 - **Composable extraction**: Extracted hover + popover logic into `composables/useHoverPopover.ts`. Chose composable over directive because it needs to manage multiple reactive states (timer, hover flags, popover position/visibility) and return event handler objects. The composable exposes `triggerEvents` and `popoverEvents` objects that can be bound via `v-on`, keeping `CounterTab.vue` focused on business logic only.
 - **Component separation**: Each tab is its own component under `components/` to keep `tab-page.vue` clean and each tab's data/methods isolated.
+
+### Tab 2: Date & Time
+
+**Approach:**
+- Current time updates every second via `setInterval`, displayed to the minute.
+- User inputs hours/minutes/seconds as offsets to add to the current time, producing an "updated" datetime.
+- Comparison is computed reactively — automatically updates as the clock ticks or inputs change.
+
+**Design decisions:**
+- **Offset-based adjustment**: User supplies hours/minutes/seconds to add (can be negative). This felt more intuitive than requiring an absolute datetime picker, and matches the spec wording "updated by supplying seconds, minutes and/or hours".
+- **Updated display includes seconds**: Since the user can supply seconds, the updated time shows seconds too, while the current time only shows to the minute (per spec).
+- **Timer cleanup**: `setInterval` is cleared in `onBeforeUnmount` to prevent memory leaks.
+- **dayjs**: Replaced hand-written `formatDateTime` with `dayjs` — the project already uses `dayjs` across 30+ files (e.g. `shell/components/formatter/Date.vue`). Keeps date formatting consistent with the codebase.
+- **visibilitychange**: Added `document.visibilitychange` listener to immediately refresh the clock when the browser tab regains focus, preventing stale display after background throttling. This pattern is already used in the project (`shell/mixins/browser-tab-visibility.js`, `shell/components/Inactivity.vue`).
