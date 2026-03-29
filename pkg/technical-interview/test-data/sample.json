@@ -1,0 +1,8 @@
+{
+  "a": 1,
+  "b": "hello",
+  "c": true,
+  "d": null,
+  "e": { "nested": "object" },
+  "f": [1, 2, 3]
+}
