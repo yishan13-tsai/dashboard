@@ -5,11 +5,13 @@ import Tab from '@shell/components/Tabbed/Tab.vue';
 import CounterTab from '../components/CounterTab.vue';
 import DateTimeTab from '../components/DateTimeTab.vue';
 import JsonSwapTab from '../components/JsonSwapTab.vue';
+import CoinChangeTab from '../components/CoinChangeTab.vue';
 
 const TABS = [
   { name: 'counter', label: 'Counter', component: 'CounterTab' },
   { name: 'datetime', label: 'Date & Time', component: 'DateTimeTab' },
   { name: 'json-swap', label: 'JSON Swap', component: 'JsonSwapTab' },
+  { name: 'coin-change', label: 'Coin Change', component: 'CoinChangeTab' },
 ];
 
 export default defineComponent({
@@ -23,6 +25,7 @@ export default defineComponent({
     CounterTab,
     DateTimeTab,
     JsonSwapTab,
+    CoinChangeTab,
   },
 
   setup() {

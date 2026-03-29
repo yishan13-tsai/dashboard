@@ -86,3 +86,16 @@ AI (Claude Code) was used to assist with planning and implementation. This will 
 - **Swap logic**: Only swaps entries where the value is primitive (`string | number | boolean | null`). Non-primitive values (objects, arrays) keep their original key. This matches the spec examples (`{ "b": {}, "c": [] }` unchanged).
 - **Validation**: Rejects non-object JSON (arrays, primitives) with an error message, since key-value swapping only makes sense on objects.
 - **Lazy swap**: Swapped result is a `computed` but only shown after clicking the button, so the user sees original content first.
+- **Deep copy**: Non-primitive values are deep copied with `structuredClone(toRaw(value))` to avoid shared references between original and swapped result. `toRaw` is needed because Vue wraps nested objects in reactive proxies, which `structuredClone` cannot handle.
+- **JsonDisplay component**: Extracted reusable `JsonDisplay.vue` (using `<script setup>`) to avoid duplicating the JSON rendering block.
+
+### Tab 4: Coin Change (Minimum Coins)
+
+**Approach:**
+- Classic dynamic programming solution. `dp[i]` stores the minimum number of coins to make amount `i`. A `parent` array tracks which coin was used at each step for backtracking the actual coin set.
+
+**Design decisions:**
+- **Algorithm**: Bottom-up DP with O(amount × coins.length) time and O(amount) space. Backtrack from `parent[]` to reconstruct the coin list, sorted descending for readability.
+- **Input format**: Coins entered as comma-separated string (e.g. "1, 2, 5"), parsed and filtered for valid positive numbers.
+- **Edge cases**: amount=0 returns `[]`, impossible combinations return `null`, invalid inputs show error messages.
+- **Result uses `undefined` vs `null`**: `undefined` means "not yet calculated", `null` means "impossible" — distinct states for the UI.
