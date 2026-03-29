@@ -1,76 +1,61 @@
-<script lang="ts">
-import { defineComponent, ref, computed, onMounted, onBeforeUnmount } from 'vue';
+<script setup lang="ts">
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import day from 'dayjs';
 
-export default defineComponent({
-  name: 'DateTimeTab',
+const now = ref(new Date());
+let timer: ReturnType<typeof setInterval> | null = null;
 
-  setup() {
-    const now = ref(new Date());
-    let timer: ReturnType<typeof setInterval> | null = null;
+const inputHours = ref(0);
+const inputMinutes = ref(0);
+const inputSeconds = ref(0);
 
-    const inputHours = ref(0);
-    const inputMinutes = ref(0);
-    const inputSeconds = ref(0);
+const currentDisplay = computed(() => day(now.value).format('YYYY-MM-DD HH:mm'));
 
-    const currentDisplay = computed(() => day(now.value).format('YYYY-MM-DD HH:mm'));
+const updatedDate = computed(() => {
+  const d = new Date(now.value.getTime());
 
-    const updatedDate = computed(() => {
-      const d = new Date(now.value.getTime());
+  d.setHours(d.getHours() + inputHours.value);
+  d.setMinutes(d.getMinutes() + inputMinutes.value);
+  d.setSeconds(d.getSeconds() + inputSeconds.value);
 
-      d.setHours(d.getHours() + inputHours.value);
-      d.setMinutes(d.getMinutes() + inputMinutes.value);
-      d.setSeconds(d.getSeconds() + inputSeconds.value);
+  return d;
+});
 
-      return d;
-    });
+const updatedDisplay = computed(() => day(updatedDate.value).format('YYYY-MM-DD HH:mm:ss'));
 
-    const updatedDisplay = computed(() => day(updatedDate.value).format('YYYY-MM-DD HH:mm:ss'));
+const comparison = computed(() => {
+  const nowMs = now.value.getTime();
+  const updatedMs = updatedDate.value.getTime();
 
-    const comparison = computed(() => {
-      const nowMs = now.value.getTime();
-      const updatedMs = updatedDate.value.getTime();
+  if (nowMs < updatedMs) {
+    return 'before';
+  } else if (nowMs > updatedMs) {
+    return 'after';
+  }
 
-      if (nowMs < updatedMs) {
-        return 'before';
-      } else if (nowMs > updatedMs) {
-        return 'after';
-      }
+  return 'the same as';
+});
 
-      return 'the same as';
-    });
+const updateNow = () => {
+  now.value = new Date();
+};
 
-    function updateNow() {
-      now.value = new Date();
-    }
+const onVisibilityChange = () => {
+  if (!document.hidden) {
+    updateNow();
+  }
+};
 
-    function onVisibilityChange() {
-      if (!document.hidden) {
-        updateNow();
-      }
-    }
+onMounted(() => {
+  timer = setInterval(updateNow, 1000);
+  document.addEventListener('visibilitychange', onVisibilityChange);
+});
 
-    onMounted(() => {
-      timer = setInterval(updateNow, 1000);
-      document.addEventListener('visibilitychange', onVisibilityChange);
-    });
-
-    onBeforeUnmount(() => {
-      if (timer) {
-        clearInterval(timer);
-      }
-      document.removeEventListener('visibilitychange', onVisibilityChange);
-    });
-
-    return {
-      currentDisplay,
-      updatedDisplay,
-      comparison,
-      inputHours,
-      inputMinutes,
-      inputSeconds,
-    };
-  },
+onBeforeUnmount(() => {
+  if (timer) {
+    clearInterval(timer);
+  }
+  document.removeEventListener('visibilitychange', onVisibilityChange);
 });
 </script>
 

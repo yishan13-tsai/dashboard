@@ -4,10 +4,12 @@ import Tabbed from '@shell/components/Tabbed/index.vue';
 import Tab from '@shell/components/Tabbed/Tab.vue';
 import CounterTab from '../components/CounterTab.vue';
 import DateTimeTab from '../components/DateTimeTab.vue';
+import JsonSwapTab from '../components/JsonSwapTab.vue';
 
 const TABS = [
   { name: 'counter', label: 'Counter', component: 'CounterTab' },
   { name: 'datetime', label: 'Date & Time', component: 'DateTimeTab' },
+  { name: 'json-swap', label: 'JSON Swap', component: 'JsonSwapTab' },
 ];
 
 export default defineComponent({
@@ -20,6 +22,7 @@ export default defineComponent({
     Tab,
     CounterTab,
     DateTimeTab,
+    JsonSwapTab,
   },
 
   setup() {

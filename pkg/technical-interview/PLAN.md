@@ -75,3 +75,14 @@ AI (Claude Code) was used to assist with planning and implementation. This will 
 - **Timer cleanup**: `setInterval` is cleared in `onBeforeUnmount` to prevent memory leaks.
 - **dayjs**: Replaced hand-written `formatDateTime` with `dayjs` — the project already uses `dayjs` across 30+ files (e.g. `shell/components/formatter/Date.vue`). Keeps date formatting consistent with the codebase.
 - **visibilitychange**: Added `document.visibilitychange` listener to immediately refresh the clock when the browser tab regains focus, preventing stale display after background throttling. This pattern is already used in the project (`shell/mixins/browser-tab-visibility.js`, `shell/components/Inactivity.vue`).
+
+### Tab 3: JSON Key-Value Swap
+
+**Approach:**
+- User uploads a `.json` file via the project's existing `FileSelector` component (`shell/components/form/FileSelector.vue`), which handles `FileReader` internally and emits the file content as a string.
+- Display parsed JSON, then on button click show the swapped result.
+
+**Design decisions:**
+- **Swap logic**: Only swaps entries where the value is primitive (`string | number | boolean | null`). Non-primitive values (objects, arrays) keep their original key. This matches the spec examples (`{ "b": {}, "c": [] }` unchanged).
+- **Validation**: Rejects non-object JSON (arrays, primitives) with an error message, since key-value swapping only makes sense on objects.
+- **Lazy swap**: Swapped result is a `computed` but only shown after clicking the button, so the user sees original content first.

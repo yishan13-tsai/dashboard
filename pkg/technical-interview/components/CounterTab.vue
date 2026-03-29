@@ -1,38 +1,22 @@
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
+<script setup lang="ts">
+import { ref } from 'vue';
 import { useHoverPopover } from '../composables/useHoverPopover';
 
 const INITIAL_COUNTER = 42;
 
-export default defineComponent({
-  name: 'CounterTab',
+const counter = ref(INITIAL_COUNTER);
+const {
+  showPopover, popoverStyle, hide, triggerEvents, popoverEvents
+} = useHoverPopover();
 
-  setup() {
-    const counter = ref(INITIAL_COUNTER);
-    const {
-      showPopover, popoverStyle, hide, triggerEvents, popoverEvents
-    } = useHoverPopover();
+const decrement = () => {
+  counter.value--;
+};
 
-    function decrement() {
-      counter.value--;
-    }
-
-    function resetToDefault() {
-      counter.value = INITIAL_COUNTER;
-      hide();
-    }
-
-    return {
-      counter,
-      showPopover,
-      popoverStyle,
-      triggerEvents,
-      popoverEvents,
-      decrement,
-      resetToDefault,
-    };
-  },
-});
+const resetToDefault = () => {
+  counter.value = INITIAL_COUNTER;
+  hide();
+};
 </script>
 
 <template>
